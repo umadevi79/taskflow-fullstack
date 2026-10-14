@@ -20,10 +20,28 @@ connection_string = (
     f"SERVER={server};DATABASE={database};Trusted_Connection=yes;"
     f"Encrypt=yes;TrustServerCertificate={trust_cert};"
 )
-engine = create_engine(
-    "mssql+pyodbc:///?odbc_connect=" + quote_plus(connection_string),
-    pool_pre_ping=True,
-)
+database_url = os.getenv("DATABASE_URL")
+
+if database_url:
+    # Use Neon PostgreSQL when DATABASE_URL is configured
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace(
+            "postgresql://",
+            "postgresql+psycopg://",
+            1
+        )
+
+    engine = create_engine(
+        database_url,
+        pool_pre_ping=True,
+    )
+
+else:
+    # Continue using local Microsoft SQL Server
+    engine = create_engine(
+        "mssql+pyodbc:///?odbc_connect=" + quote_plus(connection_string),
+        pool_pre_ping=True,
+    )
 
 
 class Base(DeclarativeBase):
