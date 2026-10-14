@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Check, CheckCircle2, Circle, ClipboardList, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 
-const API = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+const API = (
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+).replace(/\/$/, "");
 
 async function request(path, options = {}) {
   const response = await fetch(`${API}${path}`, {
